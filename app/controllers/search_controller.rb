@@ -9,10 +9,22 @@ class SearchController < ApplicationController
 
     @results, template = query(resource, query_params)
 
-    if template.present?
-      render template
-    else
-      not_found
+    respond_to do |format|
+      format.html do
+        if template.present?
+          render template
+        else
+          not_found
+        end
+      end
+
+      format.json do
+        if template.present?
+          render json: @results
+        else
+          render json: { error: "Not found" }, status: :not_found
+        end
+      end
     end
   end
 end
